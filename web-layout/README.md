@@ -15,7 +15,11 @@ A web application for creating 8-page saddle-stitched booklets with proper impos
 
 1. Install Python dependencies:
 ```bash
+# From the parent directory (zine-tools)
 pip install -r requirements.txt
+
+# Or from this directory
+pip install -r ../requirements.txt
 ```
 
 2. Run the application:

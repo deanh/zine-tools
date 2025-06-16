@@ -3,6 +3,7 @@ let pageImages = {};
 let selectedImage = null;
 let draggedImage = null;
 let imageIdCounter = 0;
+let availablePalettes = {};
 
 // Initialize event listeners
 document.addEventListener('DOMContentLoaded', function() {
@@ -18,11 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
         ditherOptions.forEach(option => {
             option.style.display = this.checked ? 'flex' : 'none';
         });
+        if (this.checked) {
+            updatePaletteVisibility();
+        }
         applyDitheringToAll();
     });
     
-    document.getElementById('colorMode').addEventListener('change', applyDitheringToAll);
+    document.getElementById('colorMode').addEventListener('change', function() {
+        updatePaletteVisibility();
+        applyDitheringToAll();
+    });
     document.getElementById('ditherMethod').addEventListener('change', applyDitheringToAll);
+    document.getElementById('paletteSelect').addEventListener('change', applyDitheringToAll);
     
     // Add click outside to deselect
     document.addEventListener('click', function(e) {
@@ -33,6 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize page sizes
     updatePageSizes();
+    
+    // Load available palettes
+    loadPalettes();
 });
 
 function handleImageUpload(e) {
@@ -463,6 +474,40 @@ function updatePreview() {
     });
 }
 
+function loadPalettes() {
+    fetch('/palettes')
+        .then(response => response.json())
+        .then(palettes => {
+            availablePalettes = palettes;
+            const paletteSelect = document.getElementById('paletteSelect');
+            paletteSelect.innerHTML = '';
+            
+            Object.keys(palettes).forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                paletteSelect.appendChild(option);
+            });
+            
+            // Select first palette by default
+            if (Object.keys(palettes).length > 0) {
+                paletteSelect.value = Object.keys(palettes)[0];
+            }
+        })
+        .catch(error => {
+            console.error('Error loading palettes:', error);
+        });
+}
+
+function updatePaletteVisibility() {
+    const colorMode = document.getElementById('colorMode').value;
+    const paletteOptions = document.querySelectorAll('.palette-options');
+    
+    paletteOptions.forEach(option => {
+        option.style.display = colorMode === 'custom' ? 'flex' : 'none';
+    });
+}
+
 function updatePageSizes() {
     const paperSize = document.getElementById('paperSize').value;
     const orientation = document.getElementById('orientation').value;
@@ -622,6 +667,34 @@ function floydSteinbergDither(imageData, colorMode) {
                 newR = Math.round((1 - Math.min(1, cyan + kBit)) * 255);
                 newG = Math.round((1 - Math.min(1, magenta + kBit)) * 255);
                 newB = Math.round((1 - Math.min(1, yellow + kBit)) * 255);
+            } else if (colorMode === 'custom') {
+                // Find nearest color in custom palette
+                const paletteName = document.getElementById('paletteSelect').value;
+                const palette = availablePalettes[paletteName] || [];
+                
+                let minDist = Infinity;
+                let nearest = { r: 0, g: 0, b: 0 };
+                
+                palette.forEach(hexColor => {
+                    const pR = parseInt(hexColor.substr(1, 2), 16);
+                    const pG = parseInt(hexColor.substr(3, 2), 16);
+                    const pB = parseInt(hexColor.substr(5, 2), 16);
+                    
+                    const dist = Math.sqrt(
+                        Math.pow(r - pR, 2) +
+                        Math.pow(g - pG, 2) +
+                        Math.pow(b - pB, 2)
+                    );
+                    
+                    if (dist < minDist) {
+                        minDist = dist;
+                        nearest = { r: pR, g: pG, b: pB };
+                    }
+                });
+                
+                newR = nearest.r;
+                newG = nearest.g;
+                newB = nearest.b;
             }
             
             // Calculate error
@@ -728,6 +801,34 @@ function atkinsonDither(imageData, colorMode) {
                 newR = Math.round((1 - Math.min(1, cyan + kBit)) * 255);
                 newG = Math.round((1 - Math.min(1, magenta + kBit)) * 255);
                 newB = Math.round((1 - Math.min(1, yellow + kBit)) * 255);
+            } else if (colorMode === 'custom') {
+                // Find nearest color in custom palette
+                const paletteName = document.getElementById('paletteSelect').value;
+                const palette = availablePalettes[paletteName] || [];
+                
+                let minDist = Infinity;
+                let nearest = { r: 0, g: 0, b: 0 };
+                
+                palette.forEach(hexColor => {
+                    const pR = parseInt(hexColor.substr(1, 2), 16);
+                    const pG = parseInt(hexColor.substr(3, 2), 16);
+                    const pB = parseInt(hexColor.substr(5, 2), 16);
+                    
+                    const dist = Math.sqrt(
+                        Math.pow(r - pR, 2) +
+                        Math.pow(g - pG, 2) +
+                        Math.pow(b - pB, 2)
+                    );
+                    
+                    if (dist < minDist) {
+                        minDist = dist;
+                        nearest = { r: pR, g: pG, b: pB };
+                    }
+                });
+                
+                newR = nearest.r;
+                newG = nearest.g;
+                newB = nearest.b;
             }
             
             // Calculate error (Atkinson distributes 3/4 of the error)

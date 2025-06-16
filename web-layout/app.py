@@ -193,6 +193,50 @@ def style():
 def script():
     return send_file('script.js')
 
+@app.route('/palettes', methods=['GET'])
+def get_palettes():
+    """Get available color palettes from the palettes directory."""
+    try:
+        palettes_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'palettes')
+        palettes = {}
+        
+        # Load built-in presets
+        presets = {
+            'riso-pink-blue': ['#FF0080', '#0078BF'],
+            'riso-fluoro': ['#FF48B0', '#FFE800', '#00A95C'],
+            'riso-primary': ['#FF0000', '#0000FF', '#FFFF00'],
+            'riso-warm': ['#FF6600', '#FFE800', '#FF0080'],
+            'riso-cool': ['#0078BF', '#00A95C', '#5C55A6'],
+        }
+        
+        for name, colors in presets.items():
+            palettes[name] = colors
+        
+        # Load palette files
+        if os.path.exists(palettes_dir):
+            for filename in os.listdir(palettes_dir):
+                if filename.endswith('.txt'):
+                    filepath = os.path.join(palettes_dir, filename)
+                    palette_name = filename[:-4]  # Remove .txt
+                    colors = []
+                    
+                    with open(filepath, 'r') as f:
+                        for line in f:
+                            line = line.strip()
+                            # Skip comments and empty lines
+                            if line and line.startswith('#') and len(line) >= 7:
+                                # Check if it's a hex color (not a comment)
+                                if all(c in '0123456789ABCDEFabcdef' for c in line[1:7]):
+                                    colors.append(line)
+                    
+                    if colors:
+                        palettes[palette_name] = colors
+        
+        return jsonify(palettes)
+    except Exception as e:
+        print(f"Error loading palettes: {e}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/generate-pdf', methods=['POST'])
 def generate_pdf():
     try:
