@@ -1,0 +1,17 @@
+# Standard Risograph Colors
+# Fluorescent Pink
+#FF48B0
+# Blue
+#0078BF
+# Yellow
+#FFE800
+# Bright Red
+#FF665E
+# Green
+#00A95C
+# Purple
+#765BA7
+# Orange
+#FF6C2F
+# Black
+#000000

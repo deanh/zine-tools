@@ -1,0 +1,7 @@
+# Risograph Fluorescent Colors
+# Fluorescent Pink
+#FF48B0
+# Fluorescent Orange
+#FF7477
+# Fluorescent Yellow/Green
+#68D82C

@@ -1,0 +1,3 @@
+# Warm duotone palette
+#FF6C2F
+#FFE800

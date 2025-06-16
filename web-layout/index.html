@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booklet Maker - 8-Page Saddle Stitch Layout</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>8-Page Booklet Maker</h1>
+            <p>Create saddle-stitched booklets with proper imposition</p>
+        </header>
+
+        <div class="controls">
+            <div class="controls-left">
+                <div class="control-group">
+                    <label for="paperSize">Paper Size:</label>
+                    <select id="paperSize">
+                        <option value="A4">A4 (210 × 297 mm)</option>
+                        <option value="A3">A3 (297 × 420 mm)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="orientation">Orientation:</label>
+                    <select id="orientation">
+                        <option value="portrait">Portrait</option>
+                        <option value="landscape">Landscape</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="ditherToggle"> Enable Dithering
+                    </label>
+                </div>
+
+                <div class="control-group dither-options" style="display: none;">
+                    <label for="colorMode">Color Mode:</label>
+                    <select id="colorMode">
+                        <option value="1bit">1-bit (B&W)</option>
+                        <option value="rgb">RGB</option>
+                        <option value="cmyk">CMYK</option>
+                    </select>
+                </div>
+
+                <div class="control-group dither-options" style="display: none;">
+                    <label for="ditherMethod">Dither Method:</label>
+                    <select id="ditherMethod">
+                        <option value="floyd-steinberg">Floyd-Steinberg</option>
+                        <option value="atkinson">Atkinson</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="generatePDF" class="primary-btn">Generate PDF</button>
+        </div>
+
+        <div class="workspace">
+            <div class="pages-container">
+                <h2>Page Layout</h2>
+                <div class="pages-grid">
+                    <div class="page" data-page="1">
+                        <span class="page-number">Page 1</span>
+                        <div class="page-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+                    <div class="page" data-page="2">
+                        <span class="page-number">Page 2</span>
+                        <div class="page-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+                    <div class="page" data-page="3">
+                        <span class="page-number">Page 3</span>
+                        <div class="page-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+                    <div class="page" data-page="4">
+                        <span class="page-number">Page 4</span>
+                        <div class="page-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+                    <div class="page" data-page="5">
+                        <span class="page-number">Page 5</span>
+                        <div class="page-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+                    <div class="page" data-page="6">
+                        <span class="page-number">Page 6</span>
+                        <div class="page-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+                    <div class="page" data-page="7">
+                        <span class="page-number">Page 7</span>
+                        <div class="page-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+                    <div class="page" data-page="8">
+                        <span class="page-number">Page 8</span>
+                        <div class="page-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="image-library">
+                    <div class="library-header">
+                        <h3>Image Library</h3>
+                        <input type="file" id="imageUpload" accept="image/*" multiple>
+                        <label for="imageUpload" class="upload-btn">+ Upload</label>
+                    </div>
+                    <div id="imageList" class="image-list"></div>
+                </div>
+                
+                <div class="preview-container">
+                    <h2>Print Preview (Imposition)</h2>
+                    <div class="imposition-preview">
+                        <div class="sheet">
+                            <h3>Front Side</h3>
+                            <div class="sheet-layout">
+                                <div class="preview-page" data-preview="8">8</div>
+                                <div class="preview-page" data-preview="1">1</div>
+                                <div class="preview-page" data-preview="4">4</div>
+                                <div class="preview-page" data-preview="5">5</div>
+                            </div>
+                        </div>
+                        <div class="sheet">
+                            <h3>Back Side</h3>
+                            <div class="sheet-layout">
+                                <div class="preview-page" data-preview="2">2</div>
+                                <div class="preview-page" data-preview="7">7</div>
+                                <div class="preview-page" data-preview="6">6</div>
+                                <div class="preview-page" data-preview="3">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
